@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+<style>
+.clock{
+    width: 420px;height:420px;
+    margin: 50px auto;
+}
+.cvs{
+    border: 1px solid pink;
+    border-radius: 50%;
+}
+
+</style>
+</head>
+<body>
+<div class="clock">
+    <canvas class="cvs" width="420" height="420">亲 该换浏览器啦</canvas>
+</div>vs
+
+
+<script>
+var cvs = document.querySelector('.cvs');
+var ctx = cvs.getContext('2d');
+
+function clock(){
+    var img = new Image();
+    img.src= 'bg.jpg';
+    img.onload = function(){
+        ctx.drawImage(img,0,0,420,420)
+
+
+        //画表盘圆
+        ctx.beginPath();
+        ctx.arc(210,210,210,0,2*Math.PI);
+        ctx.strokeStyle = 'rgb(224, 187, 210)';
+        ctx.lineWidth = 16;
+        ctx.stroke();
+        ctx.closePath();
+
+        //分刻度 一个分刻度，6度
+        for (var i = 0; i < 60; i++){
+            ctx.save();  //保存当前原点
+            ctx.beginPath();
+            ctx.translate(210,210);   //移动原点
+            ctx.rotate(i*6*Math.PI/180)
+            ctx.moveTo(0,-192);   //分刻度起点
+            ctx.lineTo(0,-202);
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = 'pink';
+            ctx.stroke();
+            ctx.closePath();
+            ctx.restore();  //恢复原点
+        }
+
+        //小时刻度
+        for (var i = 0; i < 12; i++){
+            ctx.save();  //保存当前原点
+            ctx.beginPath();
+            ctx.translate(210,210);   //移动原点
+            ctx.rotate(i*30*Math.PI/180)
+            ctx.moveTo(0,-187);   //分刻度起点
+            ctx.lineTo(0,-202);
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = 'rgb(224, 187, 210)'
+            ctx.stroke();
+            ctx.closePath();
+            ctx.restore();  //恢复原点
+        }
+
+        //获取时间
+        var d = new Date();
+        var hours = d.getHours();
+        var minutes = d.getMinutes();
+        var seconds = d.getSeconds();
+        hours = hours > 9 ? hours : ('0'+hours);
+        minutes = minutes > 9 ? minutes : ('0'+minutes);
+        seconds = seconds > 9 ? seconds : ('0'+seconds);
+        ctx.beginPath();
+        ctx.font = 'bold 30px 微软雅黑';
+        ctx.strokeStyle = 'plum';
+        ctx.lineWidth = 2;
+        ctx.strokeText(hours+":"+minutes+":"+seconds,150,350);
+        ctx.closePath();
+
+        // 获取标准带小数的时间值
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var s = d.getSeconds();
+        h = h + m/60;
+        m = m + s/60;
+
+        //画时针
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(210,210);
+        ctx.rotate(h*30*Math.PI/180);
+        ctx.moveTo(0,14);
+        ctx.lineTo(0,-130);
+        ctx.lineWidth = 9;
+        ctx.strokeStyle = 'wheat';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+
+        //画分针
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(210,210);
+        ctx.rotate(m*6*Math.PI/180);
+        ctx.moveTo(0,14);
+        ctx.lineTo(0,-160);
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = 'pink';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+
+        //画秒针
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(210,210);
+        ctx.rotate(s*6*Math.PI/180);
+        ctx.moveTo(0,14);
+        ctx.lineTo(0,-180);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgb(224, 187, 210)';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+
+        //秒针美化
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(210,210);
+        ctx.rotate(s*6*Math.PI/180);
+        ctx.arc(0,-170,6,0,2*Math.PI)
+        ctx.fillStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+    }
+}
+clock();
+setInterval(clock,1000)
+
+</script>
+</body>
+</html>
